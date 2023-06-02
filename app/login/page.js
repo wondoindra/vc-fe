@@ -4,18 +4,23 @@ import { useState, useEffect } from "react"
 import Button from "@mui/material/Button"
 import TextField from "@mui/material/TextField"
 
+import userApi from '../api/user'
+
 const Login = () => {
 
   const [mode, setMode] = useState('login')
   const [email, setEmail] = useState('')
   const [password ,setPassword] = useState('')
+  const [name, setName] = useState('')
 
-  const onRegister = () => {
-    console.log('register')
+  const onRegister = async() => {
+    const response = await userApi.signup({ email, password, name })
+    if (response.ok) setMode('login')
   }
 
-  const onLogin = () => {
-    console.log('login')
+  const onLogin = async() => {
+    const response = await userApi.login({ email, password })
+    if (response.ok) return
   }
 
   const onButtonClick = () => {

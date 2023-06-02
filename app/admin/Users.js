@@ -1,11 +1,14 @@
 import * as React from 'react'
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import Button from '@mui/material/Button'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import Typography from '@mui/material/Typography'
+
+import adminApi from '../api/admin'
 
 function createData(id, date, name, email, status, shipTo, paymentMethod, amount) {
   return { id, date, name, email, status, shipTo, paymentMethod, amount }
@@ -71,6 +74,22 @@ function preventDefault(event) {
 export default function Users() {
   const [users, setUsers] = useState([])
 
+  const fetchUsers = async() => {
+    const response = await adminApi.getUsers()
+    console.log(response)
+    setUsers(response.data)
+    console.log(response)
+  }
+
+  const approveUser = async(id) => {
+    const response = await adminApi.verifyUser(id)
+    if (response.ok) fetchUsers()
+  }
+
+  useEffect(() => {
+    fetchUsers()
+  }, [])
+
   return (
     <React.Fragment>
        <Typography component="h2" variant="h6" color="primary" gutterBottom>
@@ -79,25 +98,27 @@ export default function Users() {
       <Table size="small">
         <TableHead>
           <TableRow>
-            <TableCell>Date</TableCell>
+            <TableCell>Registered at</TableCell>
             <TableCell>Name</TableCell>
             <TableCell>Email</TableCell>
             <TableCell>Status</TableCell>
-            <TableCell>Ship To</TableCell>
-            <TableCell>Payment Method</TableCell>
-            <TableCell align="right">Sale Amount</TableCell>
+            <TableCell align="right">Action</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
+          {users.map((row) => (
             <TableRow key={row.id}>
-              <TableCell>{row.date}</TableCell>
+              <TableCell>{row.createdAt}</TableCell>
               <TableCell>{row.name}</TableCell>
               <TableCell>{row.email}</TableCell>
               <TableCell>{row.status}</TableCell>
-              <TableCell>{row.shipTo}</TableCell>
-              <TableCell>{row.paymentMethod}</TableCell>
-              <TableCell align="right">{`$${row.amount}`}</TableCell>
+              <TableCell align="right">
+                {row.status === 'PENDING' && (
+                  <Button variant='contained' color='success' onClick={() => approveUser(row.id)}>
+                    APPROVE
+                  </Button>
+                )}
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
