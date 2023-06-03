@@ -19,7 +19,6 @@ const Login = () => {
 
   const onRegister = async() => {
     const response = await userApi.signup({ email, password, name })
-    console.log(response)
     if (response.status === 200) setMode('LOGIN')
   }
 
