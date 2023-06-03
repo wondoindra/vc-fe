@@ -10,80 +10,17 @@ import Typography from '@mui/material/Typography'
 
 import adminApi from '../api/admin'
 
-function createData(id, date, name, email, status, shipTo, paymentMethod, amount) {
-  return { id, date, name, email, status, shipTo, paymentMethod, amount }
-}
-
-const rows = [
-  createData(
-    0,
-    '16 Mar, 2019',
-    'Elvis Presley',
-    'elvis@mail.com',
-    'approved',
-    'Tupelo, MS',
-    'VISA ⠀•••• 3719',
-    312.44,
-  ),
-  createData(
-    1,
-    '16 Mar, 2019',
-    'Paul McCartney',
-    'paul@mail.com',
-    'pending',
-    'London, UK',
-    'VISA ⠀•••• 2574',
-    866.99,
-  ),
-  createData(
-    2,
-    '16 Mar, 2019',
-    'Tom Scholz',
-    'tom@mail.com',
-    'pending',
-    'Boston, MA',
-    'MC ⠀•••• 1253',
-    100.81
-  ),
-  createData(
-    3,
-    '16 Mar, 2019',
-    'Michael Jackson',
-    'michael@mail.com',
-    'approved',
-    'Gary, IN',
-    'AMEX ⠀•••• 2000',
-    654.39,
-  ),
-  createData(
-    4,
-    '15 Mar, 2019',
-    'Bruce Springsteen',
-    'bruce@mail.com',
-    'pending',
-    'Long Branch, NJ',
-    'VISA ⠀•••• 5919',
-    212.79,
-  ),
-]
-
-function preventDefault(event) {
-  event.preventDefault()
-}
-
 export default function Users() {
   const [users, setUsers] = useState([])
 
   const fetchUsers = async() => {
     const response = await adminApi.getUsers()
-    console.log(response)
     setUsers(response.data)
-    console.log(response)
   }
 
   const approveUser = async(id) => {
     const response = await adminApi.verifyUser(id)
-    if (response.ok) fetchUsers()
+    if (response.status === 200) fetchUsers()
   }
 
   useEffect(() => {
@@ -113,11 +50,15 @@ export default function Users() {
               <TableCell>{row.email}</TableCell>
               <TableCell>{row.status}</TableCell>
               <TableCell align="right">
-                {row.status === 'PENDING' && (
-                  <Button variant='contained' color='success' onClick={() => approveUser(row.id)}>
-                    APPROVE
-                  </Button>
-                )}
+                <Button
+                  variant='contained'
+                  color='success'
+                  onClick={() => approveUser(row.id)}
+                  disabled={row.status === 'VERIFIED'}
+                  className='bg-[#1b5e20]'
+                >
+                  {row.status === 'VERIFIED' ? 'VERIFIED' : 'APPROVE'}
+                </Button>
               </TableCell>
             </TableRow>
           ))}
