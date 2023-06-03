@@ -1,6 +1,8 @@
 'use client'
 
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { useEffect } from 'react'
 
 import Container from '@mui/material/Container'
 import Card from '@mui/material/Card'
@@ -14,7 +16,25 @@ import ProductCard from "./components/ProductCard"
 
 import Product from "./data/products"
 
+import { useUserContext } from '../context/context'
+
 export default function Home() {
+
+  const router = useRouter()
+  const { user, setUser } = useUserContext()
+
+  useEffect(() => {
+    setUser('index')
+  })
+
+  useEffect(() => {
+    console.log(user)
+  }, [user])
+
+  const navigateLogin = () => {
+    router.push("/login")
+  }
+
   return (
     <section className="bg-white">
       <AppBar position="relative">
@@ -22,11 +42,16 @@ export default function Home() {
           <Typography variant="h6" color="inherit" noWrap>
             Album layout
           </Typography>
-          <Link href="/login">
-            <Typography variant="h6" color="inherit" noWrap>
-              Login
-            </Typography>
-          </Link>
+          {!user.loggedIn && (
+            <div
+              onClick={navigateLogin}
+              className='cursor-pointer'
+            >
+              <Typography variant="h6" color="inherit" noWrap>
+                Login
+              </Typography>
+            </div>
+          )}
         </Toolbar>
       </AppBar>
       <main>

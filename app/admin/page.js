@@ -1,5 +1,8 @@
 'use client'
-import { useState } from "react"
+import { useState, useEffect } from "react"
+
+import { useRouter } from 'next/navigation'
+
 import Box from '@mui/material/Box'
 import Toolbar from '@mui/material/Toolbar'
 import List from '@mui/material/List'
@@ -18,17 +21,29 @@ import MenuIcon from '@mui/icons-material/Menu'
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'
 
 import Users from './Users'
+import { useUserContext } from '../../context/context'
 
 import Drawer from '../components/Drawer'
 import AppBar from "../components/Appbar"
 
 const Admin = () => {
+  const router = useRouter()
+  const { user, setUser } = useUserContext()
   const [open, setOpen] = useState(false)
 
   const toggleDrawer = () => {
     setOpen(!open)
   }
 
+  useEffect(() => {
+    setUser({ ...user, mode: 'ADMIN' })
+
+    if (!user.loggedIn) router.push('/login')
+  })
+
+  useEffect(() => {
+    console.log(user)
+  }, [user])
 
   return (
     <section className="h-screen bg-white">
