@@ -3,6 +3,8 @@ import { useState, useEffect } from "react"
 
 import { useRouter } from 'next/navigation'
 
+import Backdrop from '@mui/material/Backdrop'
+import CircularProgress from '@mui/material/CircularProgress'
 import Box from '@mui/material/Box'
 import Toolbar from '@mui/material/Toolbar'
 import List from '@mui/material/List'
@@ -30,6 +32,7 @@ const Admin = () => {
   const router = useRouter()
   const { user, setUser } = useUserContext()
   const [open, setOpen] = useState(false)
+  const [loading, setLoading] = useState(true)
 
   const toggleDrawer = () => {
     setOpen(!open)
@@ -38,12 +41,26 @@ const Admin = () => {
   useEffect(() => {
     setUser({ ...user, mode: 'ADMIN' })
 
-    if (!user.loggedIn) router.push('/login')
-  })
+    if (!user.loggedIn) {
+      router.push('/login')
+    } else {
+      setLoading(false)
+    }
+  }, [])
 
-  useEffect(() => {
-    console.log(user)
-  }, [user])
+  if (loading) {
+    return (
+      <section className="h-screen bg-white">
+        <Backdrop open={loading}>
+          <CircularProgress color="inherit" />
+        </Backdrop>
+      </section>
+    )
+  }
+
+  const handleLogout = () => {
+    window.location.href = '/'
+  }
 
   return (
     <section className="h-screen bg-white">
@@ -51,6 +68,7 @@ const Admin = () => {
         <AppBar position="absolute" open={open}>
           <Toolbar
             sx={{ pr: '24px' }}
+            className="flex justify-between"
           >
             <IconButton
               edge="start"
@@ -73,6 +91,14 @@ const Admin = () => {
             >
               Dashboard
             </Typography>
+            <div
+              onClick={handleLogout}
+              className='cursor-pointer'
+            >
+              <Typography variant="h6" color="inherit" noWrap>
+                Logout
+              </Typography>
+            </div>
           </Toolbar>
         </AppBar>
         <Drawer variant="permanent" open={open}>
