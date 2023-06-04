@@ -4,8 +4,9 @@ import { useRouter } from 'next/navigation'
 
 import Button from "@mui/material/Button"
 import TextField from "@mui/material/TextField"
+import Typography from "@mui/material/Typography"
 
-import userApi from '../api/user'
+import loginApi from '../api/login'
 import { useUserContext } from '../../context/context'
 
 const Login = () => {
@@ -23,9 +24,9 @@ const Login = () => {
   }
 
   const onLogin = async() => {
-    const response = await userApi.login({ email, password })
-    if (response.ok) {
-      setUser({ loggedIn: true })
+    const response = await loginApi.login({ email, password, method: user.mode })
+    if (response.status === 200) {
+      setUser({ ...user, loggedIn: true, name: response.data.name })
       if (user.mode === 'ADMIN') return router.push('/admin')
       return router.push('/')
     }
@@ -47,8 +48,11 @@ const Login = () => {
 
   return (
     <section className="h-screen bg-white">
-      <div className="h-full flex items-center justify-center">
-        <div className="w-1/2 h-1/2 flex flex-col items-center justify-center border rounded">
+      <div className="h-full flex flex-col items-center justify-center">
+        <Typography variant="h2" color='black' className="mb-8">
+          {mode}
+        </Typography>
+        <div className="w-1/2 flex flex-col items-center justify-center border rounded py-8">
           {mode === 'REGISTER' && (
             <div className="mb-5 w-1/2 flex justify-center items-center">
               <TextField
