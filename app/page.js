@@ -23,16 +23,12 @@ export default function Home() {
   const router = useRouter()
   const { user, setUser } = useUserContext()
 
-  useEffect(() => {
-    setUser('index')
-  })
-
-  useEffect(() => {
-    console.log(user)
-  }, [user])
-
   const navigateLogin = () => {
     router.push("/login")
+  }
+
+  const handleLogout = () => {
+    window.location.href = '/'
   }
 
   return (
@@ -40,9 +36,9 @@ export default function Home() {
       <AppBar position="relative">
         <Toolbar className='flex justify-between'>
           <Typography variant="h6" color="inherit" noWrap>
-            Album layout
+            IDMall
           </Typography>
-          {!user.loggedIn && (
+          {!user.loggedIn ? (
             <div
               onClick={navigateLogin}
               className='cursor-pointer'
@@ -51,6 +47,25 @@ export default function Home() {
                 Login
               </Typography>
             </div>
+          ) : (
+            <>
+              <Typography
+                className='mr-4'
+                variant="h6"
+                color="inherit"
+                noWrap
+              >
+                {`Welcome, ${user.name}`}
+              </Typography>
+              <div
+                onClick={handleLogout}
+                className='cursor-pointer'
+              >
+                <Typography variant="h6" color="inherit" noWrap>
+                  Logout
+                </Typography>
+              </div>
+            </>
           )}
         </Toolbar>
       </AppBar>
