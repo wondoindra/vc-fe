@@ -4,9 +4,9 @@ import CardContent from '@mui/material/CardContent'
 import CardMedia from '@mui/material/CardMedia'
 import Typography from "@mui/material/Typography"
 
-const ProductCard = ({ product, key }) => {
+const ProductCard = ({ product }) => {
   return (
-    <Grid item key={key} xs={12} sm={6} md={3}>
+    <Grid item xs={12} sm={6} md={3}>
       <Card
         sx={{ height: '100%', display: 'flex', flexDirection: 'column', cursor: 'pointer' }}
       >
